@@ -1,5 +1,4 @@
 //
-//  Base45.swift
 //  Base45-Swift
 //
 // Copyright 2021 Dirk-Willem van Gulik, Ministry of Public Health, the Netherlands.
@@ -28,34 +27,34 @@ extension String {
     
     public func fromBase45() throws ->Data  {
         let BASE45_CHARSET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:"
-        var d = Data()
-        var o = Data()
+        var data = Data()
+        var output = Data()
         
-        for c in self.uppercased() {
-            if let at = BASE45_CHARSET.firstIndex(of: c) {
+        for character in self.uppercased() {
+            if let at = BASE45_CHARSET.firstIndex(of: character) {
                 let idx  = BASE45_CHARSET.distance(from: BASE45_CHARSET.startIndex, to: at)
-                d.append(UInt8(idx))
+                data.append(UInt8(idx))
             } else {
                 throw Base45Error.Base64InvalidCharacter
             }
         }
-        for i in stride(from:0, to:d.count, by: 3) {
-            if (d.count - i < 2) {
+        for i in stride(from: 0, to: data.count, by: 3) {
+            if (data.count - i < 2) {
                 throw Base45Error.Base64InvalidLength
             }
-            var x : UInt32 = UInt32(d[i]) + UInt32(d[i+1])*45
-            if (d.count - i >= 3) {
-                x += 45 * 45 * UInt32(d[i+2])
+            var x : UInt32 = UInt32(data[i]) + UInt32(data[i+1])*45
+            if (data.count - i >= 3) {
+                x += 45 * 45 * UInt32(data[i+2])
                 
                 guard x / 256 <= UInt8.max else {
                     throw Base45Error.DataOverflow
                 }
                 
-                o.append(UInt8(x / 256))
+                output.append(UInt8(x / 256))
             }
-            o.append(UInt8(x % 256))
+            output.append(UInt8(x % 256))
         }
-        return o
+        return output
     }
 }
 
@@ -68,7 +67,7 @@ extension String {
 extension Data {
     public func toBase45()->String {
         let BASE45_CHARSET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:"
-        var o = String()
+        var output = String()
         for i in stride(from:0, to:self.count, by: 2) {
             if (self.count - i > 1) {
                 let x : Int = (Int(self[i])<<8) + Int(self[i+1])
@@ -76,19 +75,17 @@ extension Data {
                 let x2 : Int = x % (45*45)
                 let d : Int = x2 / 45
                 let c : Int = x2 % 45
-                o.append(BASE45_CHARSET[c])
-                o.append(BASE45_CHARSET[d])
-                o.append(BASE45_CHARSET[e])
+                output.append(BASE45_CHARSET[c])
+                output.append(BASE45_CHARSET[d])
+                output.append(BASE45_CHARSET[e])
             } else {
                 let x2 : Int = Int(self[i])
                 let d : Int = x2 / 45
                 let c : Int = x2 % 45
-                o.append(BASE45_CHARSET[c])
-                o.append(BASE45_CHARSET[d])
+                output.append(BASE45_CHARSET[c])
+                output.append(BASE45_CHARSET[d])
             }
         }
-        return o
+        return output
     }
 }
-        
-
