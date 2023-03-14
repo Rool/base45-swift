@@ -39,13 +39,13 @@ extension String {
                 throw Base45Error.base64InvalidCharacter
             }
         }
-        for i in stride(from: 0, to: data.count, by: 3) {
-            if data.count - i < 2 {
+        for index in stride(from: 0, to: data.count, by: 3) {
+            if data.count - index < 2 {
                 throw Base45Error.base64InvalidLength
             }
-            var x: UInt32 = UInt32(data[i]) + UInt32(data[i + 1]) * 45
-            if data.count - i >= 3 {
-                x += 45 * 45 * UInt32(data[i + 2])
+            var x: UInt32 = UInt32(data[index]) + UInt32(data[index + 1]) * 45
+            if data.count - index >= 3 {
+                x += 45 * 45 * UInt32(data[index + 2])
                 
                 guard x / 256 <= UInt8.max else {
                     throw Base45Error.dataOverflow
@@ -72,9 +72,9 @@ extension Data {
         
         let charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:"
         var output = String()
-        for i in stride(from: 0, to: self.count, by: 2) {
-            if self.count - i > 1 {
-                let x: Int = (Int(self[i]) << 8) + Int(self[i + 1])
+        for index in stride(from: 0, to: self.count, by: 2) {
+            if self.count - index > 1 {
+                let x: Int = (Int(self[index]) << 8) + Int(self[index + 1])
                 let e: Int = x / (45 * 45)
                 let x2: Int = x % (45 * 45)
                 let quotient: Int = x2 / 45
@@ -83,7 +83,7 @@ extension Data {
                 output.append(charset[quotient])
                 output.append(charset[e])
             } else {
-                let x2: Int = Int(self[i])
+                let x2: Int = Int(self[index])
                 let quotient: Int = x2 / 45
                 let remainder: Int = x2 % 45
                 output.append(charset[remainder])
