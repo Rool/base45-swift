@@ -43,17 +43,17 @@ extension String {
             if data.count - index < 2 {
                 throw Base45Error.base64InvalidLength
             }
-            var x: UInt32 = UInt32(data[index]) + UInt32(data[index + 1]) * 45
+            var value: UInt32 = UInt32(data[index]) + UInt32(data[index + 1]) * 45
             if data.count - index >= 3 {
-                x += 45 * 45 * UInt32(data[index + 2])
+                value += 45 * 45 * UInt32(data[index + 2])
                 
-                guard x / 256 <= UInt8.max else {
+                guard value / 256 <= UInt8.max else {
                     throw Base45Error.dataOverflow
                 }
                 
-                output.append(UInt8(x / 256))
+                output.append(UInt8(value / 256))
             }
-            output.append(UInt8(x % 256))
+            output.append(UInt8(value % 256))
         }
         return output
     }
@@ -74,18 +74,18 @@ extension Data {
         var output = String()
         for index in stride(from: 0, to: self.count, by: 2) {
             if self.count - index > 1 {
-                let x: Int = (Int(self[index]) << 8) + Int(self[index + 1])
-                let e: Int = x / (45 * 45)
-                let x2: Int = x % (45 * 45)
+                let value: Int = (Int(self[index]) << 8) + Int(self[index + 1])
+                let e1: Int = value / (45 * 45)
+                let x2: Int = value % (45 * 45)
                 let quotient: Int = x2 / 45
                 let remainder: Int = x2 % 45
                 output.append(charset[remainder])
                 output.append(charset[quotient])
-                output.append(charset[e])
+                output.append(charset[e1])
             } else {
-                let x2: Int = Int(self[index])
-                let quotient: Int = x2 / 45
-                let remainder: Int = x2 % 45
+                let value: Int = Int(self[index])
+                let quotient: Int = value / 45
+                let remainder: Int = value % 45
                 output.append(charset[remainder])
                 output.append(charset[quotient])
             }
