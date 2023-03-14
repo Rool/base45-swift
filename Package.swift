@@ -14,7 +14,7 @@ let package = Package(
     products: [
         .library(
             name: "base45-swift",
-            targets: ["base45-swift"]),
+            targets: ["base45-swift"])
     ],
     dependencies: [
     ],
@@ -24,6 +24,6 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "base45-swiftTests",
-            dependencies: ["base45-swift"]),
+            dependencies: ["base45-swift"])
     ]
 )
