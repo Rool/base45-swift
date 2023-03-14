@@ -22,6 +22,7 @@ final class base45_swiftTests: XCTestCase {
     
     func test_convertFromBase45() {
         
+        XCTAssertEqual( try "BB8".fromBase45(), "AB".data(using: .utf8))
         XCTAssertEqual( try "%69 VD92EX0".fromBase45(), "Hello!!".data(using: .utf8))
         XCTAssertEqual( try "UJCLQE7W581".fromBase45(), "base-45".data(using: .utf8))
         XCTAssertEqual( try "QED8WEX0".fromBase45(), "ietf!".data(using: .utf8))
@@ -32,6 +33,7 @@ final class base45_swiftTests: XCTestCase {
     
     func test_convertToBase45() {
         
+        XCTAssertEqual( "BB8", "AB".data(using: .utf8)?.toBase45())
         XCTAssertEqual( "%69 VD92EX0", "Hello!!".data(using: .utf8)?.toBase45())
         XCTAssertEqual( "UJCLQE7W581", "base-45".data(using: .utf8)?.toBase45())
         XCTAssertEqual( "QED8WEX0", "ietf!".data(using: .utf8)?.toBase45())
