@@ -26,6 +26,7 @@ extension String {
     }
     
     public func fromBase45() throws -> Data {
+        
         let charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:"
         var data = Data()
         var output = Data()
@@ -76,17 +77,17 @@ extension Data {
                 let x: Int = (Int(self[i]) << 8) + Int(self[i + 1])
                 let e: Int = x / (45 * 45)
                 let x2: Int = x % (45 * 45)
-                let d: Int = x2 / 45
-                let c: Int = x2 % 45
-                output.append(charset[c])
-                output.append(charset[d])
+                let quotient: Int = x2 / 45
+                let remainder: Int = x2 % 45
+                output.append(charset[remainder])
+                output.append(charset[quotient])
                 output.append(charset[e])
             } else {
                 let x2: Int = Int(self[i])
-                let d: Int = x2 / 45
-                let c: Int = x2 % 45
-                output.append(charset[c])
-                output.append(charset[d])
+                let quotient: Int = x2 / 45
+                let remainder: Int = x2 % 45
+                output.append(charset[remainder])
+                output.append(charset[quotient])
             }
         }
         return output
